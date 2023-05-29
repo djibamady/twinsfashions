@@ -22,7 +22,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table `coc_apprenant`
+-- Structure de la table `produits`
 --
 
 CREATE TABLE `produits` (
@@ -35,7 +35,7 @@ CREATE TABLE `produits` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `coc_apprenant`
+-- Déchargement des données de la table `produits et quelques requetes`
 --
 SELECT * FROM `produits` WHERE 1
 INSERT INTO `produits`(`id`, `image`, `nom`, `prix`, `description`)
