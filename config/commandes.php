@@ -1,78 +1,83 @@
-<?php
+ <?php
 
 
 
-// Fonction pour créer un produit
-function createProduct($image, $nom, $email, $prix, $description)
-{
-    $conn = connectDB();
+    // Fonction pour créer un produit
+    function createProduct($image, $nom, $prix, $description)
+    {
+        //Etablir la connexion
+        $conn = connectDB();
+        //verifier si la connexion n'a pas echouée
+        if (require($conn)) {
+            $query = "INSERT INTO produits (image, nom, prix, description) VALUES (?, ?, ?, ?)";
+            //Preparer la requête
+            $stmt = $conn->prepare($query);
+            //Executer la requete
+            $stmt->execute([$image, $nom, $prix, $description]);
 
-    $query = "INSERT INTO produit (image, nom, COC_APPRENANT_email, prix, description) VALUES (?, ?, ?, ?, ?)";
+            // $lastInsertedId = $conn->lastInsertId();
+            $conn = null;
+        }
 
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$image, $nom, $email, $prix, $description]);
 
-    $lastInsertedId = $conn->lastInsertId();
+        // return $lastInsertedId;
+    }
 
-    $conn = null;
+    // Fonction pour récupérer tous les produits
+    function getProducts()
+    {
+        $conn = connectDB();
+        //verifier si la connexion n'a pas echouée
+        if (require($conn)) {
 
-    return $lastInsertedId;
-}
+            $query = "SELECT * FROM produits ORDER BY id DESC";
 
-// Fonction pour récupérer tous les produits
-function getProducts()
-{
-    $conn = connectDB();
+            $stmt = $conn->query($query);
+            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $products;
+            $conn = null;
+        }
+    }
 
-    $query = "SELECT * FROM produit";
+    // Fonction pour récupérer un produit par son ID
+    function getProductById($id)
+    {
+        $conn = connectDB();
 
-    $stmt = $conn->query($query);
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $query = "SELECT * FROM produit WHERE id = ?";
 
-    $conn = null;
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$id]);
 
-    return $products;
-}
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Fonction pour récupérer un produit par son ID
-function getProductById($id)
-{
-    $conn = connectDB();
+        $conn = null;
 
-    $query = "SELECT * FROM produit WHERE id = ?";
+        return $product;
+    }
 
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$id]);
+    // Fonction pour mettre à jour un produit
+    function updateProduct($id, $image, $nom, $prix, $description)
+    {
+        $conn = connectDB();
 
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        $query = "UPDATE produit SET image = ?, nom = ?, prix = ?, description = ? WHERE id = ?";
 
-    $conn = null;
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$image, $nom,  $prix, $description, $id]);
 
-    return $product;
-}
+        $conn = null;
+    }
 
-// Fonction pour mettre à jour un produit
-function updateProduct($id, $image, $nom, $email, $prix, $description)
-{
-    $conn = connectDB();
+    // Fonction pour supprimer un produit
+    function deleteProduct($id)
+    {
+        $conn = connectDB();
 
-    $query = "UPDATE produit SET image = ?, nom = ?, COC_APPRENANT_email = ?, prix = ?, description = ? WHERE id = ?";
+        $query = "DELETE FROM produit WHERE id = ?";
 
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$image, $nom, $email, $prix, $description, $id]);
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$id]);
 
-    $conn = null;
-}
-
-// Fonction pour supprimer un produit
-function deleteProduct($id)
-{
-    $conn = connectDB();
-
-    $query = "DELETE FROM produit WHERE id = ?";
-
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$id]);
-
-    $conn = null;
-}
+        $conn = null;
+    }
