@@ -5,35 +5,11 @@ $password = ""; // Mot de passe MySQL
 $dbname = "twinshop"; // Nom de la base de données
 
 // Fonction de connexion à la base de données
-function connectDB()
-{
-    global $servername, $username, $password, $dbname;
 
-    try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $conn;
-    } catch (PDOException $e) {
-        die("Erreur de connexion à la base de données : " . $e->getMessage());
-    }
-}
-
-/*try {
-    // Création d'une nouvelle instance de connexion PDO
+try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
-
-
-    // Configuration des options de PDO
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-    // Connexion réussie
-    echo "Connexion à la base de données réussie.";
-
-    // Fermeture de la connexion
-    $conn = null;
+    return $conn;
 } catch (PDOException $e) {
-    // En cas d'erreur de connexion, affichage de l'erreur
     die("Erreur de connexion à la base de données : " . $e->getMessage());
 }
-*/

@@ -1,83 +1,137 @@
- <?php
+<?php
 
+function ajouterUser($nom, $prenom, $email, $motdepasse)
+{
+    if (require("connexion.php")) {
+        $req = $access->prepare("INSERT INTO utilisateurs (nom, prenom, email, motdepasse) VALUES (?, ?, ?, ?)");
 
+        $req->execute(array($nom, $prenom, $email, $motdepasse));
 
-    // Fonction pour créer un produit
-    function createProduct($image, $nom, $prix, $description)
-    {
-        //Etablir la connexion
-        $conn = connectDB();
-        //verifier si la connexion n'a pas echouée
-        if (require($conn)) {
-            $query = "INSERT INTO produits (image, nom, prix, description) VALUES (?, ?, ?, ?)";
-            //Preparer la requête
-            $stmt = $conn->prepare($query);
-            //Executer la requete
-            $stmt->execute([$image, $nom, $prix, $description]);
+        return true;
 
-            // $lastInsertedId = $conn->lastInsertId();
-            $conn = null;
+        $req->closeCursor();
+    }
+}
+
+// function getUsers($email, $password){
+
+//   if(require("connexion.php")){
+
+//     $req = $access->prepare("SELECT * FROM utilisateur ");
+
+//     $req->execute();
+
+//     if($req->rowCount() == 1){
+
+//       $data = $req->fetchAll(PDO::FETCH_OBJ);
+
+//       foreach($data as $i){
+//         $mail = $i->email;
+//         $mdp = $i->motdepasse;
+//       }
+
+//       if($mail == $email AND $mdp == $password)
+//       {
+//         return $data;
+//       }
+//       else{
+//           return false;
+//       }
+
+//     }
+
+//   }
+
+// }
+
+function modifier($image, $nom, $prix, $desc, $id)
+{
+    if (require("connexion.php")) {
+        $req = $access->prepare("UPDATE produits SET `image` = ?, nom = ?, prix = ?, description = ? WHERE id=?");
+
+        $req->execute(array($image, $nom, $prix, $desc, $id));
+
+        $req->closeCursor();
+    }
+}
+
+function afficherUnProduit($id)
+{
+    if (require("connexion.php")) {
+        $req = $access->prepare("SELECT * FROM produits WHERE id=?");
+
+        $req->execute(array($id));
+
+        $data = $req->fetchAll(PDO::FETCH_OBJ);
+
+        return $data;
+
+        $req->closeCursor();
+    }
+}
+
+function ajouter($image, $nom, $prix, $desc)
+{
+    if (require("connexion.php")) {
+        $req = $access->prepare("INSERT INTO produits (image, nom, prix, description) VALUES (?, ?, ?, ?)");
+
+        $req->execute(array($image, $nom, $prix, $desc));
+
+        $req->closeCursor();
+    }
+}
+
+function afficher()
+{
+    // Inclure le fichier de connexion
+    require("connexion.php");
+
+    // Vérifier si la connexion n'a pas échoué
+    if ($conn) {
+        $req = $conn->prepare("SELECT * FROM produits ORDER BY id DESC");
+        $req->execute();
+        $data = $req->fetchAll(PDO::FETCH_OBJ);
+
+        $req->closeCursor();
+        $conn = null;
+
+        return $data;
+    }
+}
+function supprimer($id)
+{
+    if (require("connexion.php")) {
+        $req = $access->prepare("DELETE FROM produits WHERE id=?");
+
+        $req->execute(array($id));
+
+        $req->closeCursor();
+    }
+}
+
+function getAdmin($email, $password)
+{
+
+    if (require("connexion.php")) {
+
+        $req = $access->prepare("SELECT * FROM admin WHERE id=33");
+
+        $req->execute();
+
+        if ($req->rowCount() == 1) {
+
+            $data = $req->fetchAll(PDO::FETCH_OBJ);
+
+            foreach ($data as $i) {
+                $mail = $i->email;
+                $mdp = $i->motdepasse;
+            }
+
+            if ($mail == $email and $mdp == $password) {
+                return $data;
+            } else {
+                return false;
+            }
         }
-
-
-        // return $lastInsertedId;
     }
-
-    // Fonction pour récupérer tous les produits
-    function getProducts()
-    {
-        $conn = connectDB();
-        //verifier si la connexion n'a pas echouée
-        if (require($conn)) {
-
-            $query = "SELECT * FROM produits ORDER BY id DESC";
-
-            $stmt = $conn->query($query);
-            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $products;
-            $conn = null;
-        }
-    }
-
-    // Fonction pour récupérer un produit par son ID
-    function getProductById($id)
-    {
-        $conn = connectDB();
-
-        $query = "SELECT * FROM produit WHERE id = ?";
-
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$id]);
-
-        $product = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $conn = null;
-
-        return $product;
-    }
-
-    // Fonction pour mettre à jour un produit
-    function updateProduct($id, $image, $nom, $prix, $description)
-    {
-        $conn = connectDB();
-
-        $query = "UPDATE produit SET image = ?, nom = ?, prix = ?, description = ? WHERE id = ?";
-
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$image, $nom,  $prix, $description, $id]);
-
-        $conn = null;
-    }
-
-    // Fonction pour supprimer un produit
-    function deleteProduct($id)
-    {
-        $conn = connectDB();
-
-        $query = "DELETE FROM produit WHERE id = ?";
-
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$id]);
-
-        $conn = null;
-    }
+}
