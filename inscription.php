@@ -37,13 +37,10 @@ include "config/commandes.php";
 
                 <form method="post">
                     <div class="mb-3">
-                        <label for="nom" class="form-label">Nom</label>
-                        <input type="name" name="nom" class="form-control" style="width: 350%;">
+                        <label for="pseudo" class="form-label">pseudo</label>
+                        <input type="name" name="pseudo" class="form-control" style="width: 350%;">
                     </div>
-                    <div class="mb-3">
-                        <label for="prenom" class="form-label">Prenom</label>
-                        <input type="name" name="prenom" class="form-control" style="width: 350%;">
-                    </div>
+
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" name="email" class="form-control" style="width: 350%;">
@@ -67,13 +64,12 @@ include "config/commandes.php";
 <?php
 
 if (isset($_POST['envoyer'])) {
-    if (!empty($_POST['email']) and !empty($_POST['motdepasse']) and !empty($_POST['nom']) and !empty($_POST['prenom'])) {
+    if (!empty($_POST['email']) and !empty($_POST['motdepasse']) and !empty($_POST['pseudo'])) {
         $email = htmlspecialchars(strip_tags($_POST['email']));
         $motdepasse = htmlspecialchars(strip_tags($_POST['motdepasse']));
-        $nom = htmlspecialchars(strip_tags($_POST['nom']));
-        $prenom = htmlspecialchars(strip_tags($_POST['prenom']));
+        $pseudo = htmlspecialchars(strip_tags($_POST['pseudo']));
 
-        $user = ajouterUser($nom, $prenom, $email, $motdepasse);
+        $user = ajouterUser($pseudo, $email, $motdepasse);
 
         if ($user) {
             // $_SESSION['userxXJppk45hPGu'] = $user;

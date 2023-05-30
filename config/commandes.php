@@ -1,11 +1,15 @@
+
 <?php
 
-function ajouterUser($nom, $prenom, $email, $motdepasse)
+function ajouterUser($pseudo, $email, $motdepasse)
 {
+    // Vérifier si la connexion n'a pas échoué
     if (require("connexion.php")) {
-        $req = $access->prepare("INSERT INTO utilisateurs (nom, prenom, email, motdepasse) VALUES (?, ?, ?, ?)");
+        $access = require("connexion.php");
 
-        $req->execute(array($nom, $prenom, $email, $motdepasse));
+        $req = $access->prepare("INSERT INTO admin (pseudo,  email, motdepasse) VALUES (?, ?, ?)");
+
+        $req->execute(array($pseudo, $email, $motdepasse));
 
         return true;
 
@@ -47,6 +51,7 @@ function ajouterUser($nom, $prenom, $email, $motdepasse)
 function modifier($image, $nom, $prix, $desc, $id)
 {
     if (require("connexion.php")) {
+        $access = require("connexion.php");
         $req = $access->prepare("UPDATE produits SET `image` = ?, nom = ?, prix = ?, description = ? WHERE id=?");
 
         $req->execute(array($image, $nom, $prix, $desc, $id));
@@ -58,6 +63,7 @@ function modifier($image, $nom, $prix, $desc, $id)
 function afficherUnProduit($id)
 {
     if (require("connexion.php")) {
+        $access = require("connexion.php");
         $req = $access->prepare("SELECT * FROM produits WHERE id=?");
 
         $req->execute(array($id));
@@ -73,6 +79,7 @@ function afficherUnProduit($id)
 function ajouter($image, $nom, $prix, $desc)
 {
     if (require("connexion.php")) {
+        $access = require("connexion.php");
         $req = $access->prepare("INSERT INTO produits (image, nom, prix, description) VALUES (?, ?, ?, ?)");
 
         $req->execute(array($image, $nom, $prix, $desc));
@@ -83,17 +90,13 @@ function ajouter($image, $nom, $prix, $desc)
 
 function afficher()
 {
-    // Inclure le fichier de connexion
-    require("connexion.php");
-
-    // Vérifier si la connexion n'a pas échoué
-    if ($conn) {
-        $req = $conn->prepare("SELECT * FROM produits ORDER BY id DESC");
+    if (require("connexion.php")) {
+        $access = require("connexion.php");
+        $req = $access->prepare("SELECT * FROM produits ORDER BY id DESC");
         $req->execute();
         $data = $req->fetchAll(PDO::FETCH_OBJ);
 
         $req->closeCursor();
-        $conn = null;
 
         return $data;
     }
@@ -101,6 +104,7 @@ function afficher()
 function supprimer($id)
 {
     if (require("connexion.php")) {
+        $access = require("connexion.php");
         $req = $access->prepare("DELETE FROM produits WHERE id=?");
 
         $req->execute(array($id));
@@ -113,7 +117,7 @@ function getAdmin($email, $password)
 {
 
     if (require("connexion.php")) {
-
+        $access = require("connexion.php");
         $req = $access->prepare("SELECT * FROM admin WHERE id=33");
 
         $req->execute();
