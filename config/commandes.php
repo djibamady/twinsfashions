@@ -118,7 +118,7 @@ function getAdmin($email, $password)
 
     if (require("connexion.php")) {
         $access = require("connexion.php");
-        $req = $access->prepare("SELECT * FROM admin WHERE id=33");
+        $req = $access->prepare("SELECT * FROM admin WHERE email=:email");
 
         $req->execute();
 
