@@ -33,7 +33,7 @@ if (isset($_SESSION['xRttpHo0greL39'])) {
         <div class="row">
             <div class="col-md-10">
 
-                <form method="post">
+                <form method="post" action="admin/afficher.php">
                     <div class="mb-3">
                         <label for="email" class="form-label">Login</label>
                         <input type="email" name="email" class="form-control" style="width: 350%;">
@@ -58,18 +58,34 @@ if (isset($_SESSION['xRttpHo0greL39'])) {
 
 if (isset($_POST['envoyer'])) {
     if (!empty($_POST['email']) and !empty($_POST['motdepasse'])) {
-        $login = htmlspecialchars(strip_tags($_POST['email']));
-        $motdepasse = htmlspecialchars(strip_tags($_POST['motdepasse']));
+        $email = htmlspecialchars(strip_tags($_POST['email']));
+        $motdepasse = $_POST['motdepasse'];
+        if (require("config/connexion.php")) {
+            $access = require("config/connexion.php");
+            $req = $access->prepare("SELECT * FROM admin WHERE email=?");
 
-        $admin = getAdmin($login, $motdepasse);
+            $req->execute(array($email));
+            $user = $req->fetch();
+            if ($req->rowCount() == 1) {
+                if ($user['email'] == $email && $motdepasse == $user['motdepasse']) {
+                    header('Location: admin/afficher.php');
+                    exit();
+                } else {
+                    $error = "Nom d'utilisateur ou mot de passe incorrect.";
+                    echo $error;
+                }
+            } else {
+                $error = "Nom d'utilisateur Introuvable.";
+                echo $error;
+            }
+        }
+        /*    $admin = getAdmin($login, $motdepasse);
 
         if ($admin) {
             $_SESSION['xRttpHo0greL39'] = $admin;
             header('Location: admin/afficher.php');
         } else {
             header('Location: index.php');
-        }
+        }*/
     }
 }
-
-?>
